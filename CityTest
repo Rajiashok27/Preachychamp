@@ -1,0 +1,27 @@
+package team4;
+
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
+import booking.City;
+
+import java.util.Scanner;
+
+public class CityTest {
+
+    @Test
+    void testValidCitySelection() {
+        Scanner sc = new Scanner("1\n");
+        City city = new City();
+        assertTrue(city.selectCity(sc));
+        assertEquals("Chennai", city.cityName);
+    }
+
+    @Test
+    void testInvalidThenValidCitySelection() {
+        Scanner sc = new Scanner("abc\n3\n");
+        City city = new City();
+        assertTrue(city.selectCity(sc));
+        assertEquals("Hyderabad", city.cityName);
+    }
+}
