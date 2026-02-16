@@ -1,0 +1,27 @@
+package team4;
+
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
+import booking.Theater;
+
+import java.util.Scanner;
+
+public class TheaterTest {
+
+    @Test
+    void testValidTheater() {
+        Scanner sc = new Scanner("1\n");
+        Theater t = new Theater();
+        assertTrue(t.selectTheater(sc));
+        assertEquals("PVR Cinemas", t.theaterName);
+    }
+
+    @Test
+    void testInvalidThenValidTheater() {
+        Scanner sc = new Scanner("abc\n3\n");
+        Theater t = new Theater();
+        assertTrue(t.selectTheater(sc));
+        assertEquals("Cinepolis", t.theaterName);
+    }
+}
