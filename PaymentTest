@@ -1,0 +1,25 @@
+package team4;
+
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
+import booking.Payment;
+
+import java.util.Scanner;
+
+public class PaymentTest {
+
+    @Test
+    void testValidPayment() {
+        Scanner sc = new Scanner("2\n");
+        Payment p = new Payment();
+        assertTrue(p.makePayment(sc));
+    }
+
+    @Test
+    void testInvalidThenValidPayment() {
+        Scanner sc = new Scanner("abc\n3\n");
+        Payment p = new Payment();
+        assertTrue(p.makePayment(sc));
+    }
+}
