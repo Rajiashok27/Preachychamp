@@ -1,0 +1,77 @@
+package booking;
+
+import java.util.HashSet;
+import java.util.Scanner;
+import java.util.Set;
+
+public class Seat {
+    public int ticketCount;
+    public String seatNumbers; // comma separated, e.g., A1,A2
+
+    public boolean selectSeats(Scanner sc) {
+        while (true) {
+            System.out.print("\nEnter number of tickets: ");
+            if (!sc.hasNextInt()) {
+                System.out.println(" Invalid input. Please enter a valid number for tickets.");
+                sc.nextLine();
+                System.out.println("Please enter a valid ticket count (1-10).");
+                continue;
+            }
+            ticketCount = sc.nextInt();
+            sc.nextLine(); // consume newline
+
+            if (ticketCount <= 0) {
+                System.out.println(" Ticket count must be at least 1.");
+                System.out.println("Please enter a valid ticket count (1-10).");
+                continue;
+            }
+            if (ticketCount > 10) {
+                System.out.println(" You can book a maximum of 10 tickets at once.");
+                System.out.println("Please enter a valid ticket count (1-10).");
+                continue;
+            }
+
+            while (true) {
+                System.out.print("Enter seat numbers (example A1,A2): ");
+                String input = sc.nextLine().trim();
+                if (input.isEmpty()) {
+                    System.out.println(" Seat numbers cannot be empty.");
+                    System.out.println("Please enter valid seat numbers like A1,B2.");
+                    continue;
+                }
+
+                String[] parts = input.split(",");
+                if (parts.length != ticketCount) {
+                    System.out.println(" Seat count does not match the number of tickets (" + ticketCount + ").");
+                    System.out.println("Please enter exactly " + ticketCount + " seat(s).");
+                    continue;
+                }
+
+                Set<String> unique = new HashSet<>();
+                boolean ok = true;
+                for (String raw : parts) {
+                    String s = raw.trim().toUpperCase();
+                    // Format: A1 .. Z99 (Row A-Z, Seat 1-99)
+                    if (!s.matches("^[A-Z][1-9][0-9]?$")) {
+                        System.out.println(" Invalid seat format: '" + s + "'. Use patterns like A1, B12.");
+                        ok = false;
+                        break;
+                    }
+                    if (!unique.add(s)) {
+                        System.out.println(" Duplicate seat detected: '" + s + "'.");
+                        ok = false;
+                        break;
+                    }
+                }
+
+                if (!ok) {
+                    System.out.println("Please re-enter valid, non-duplicate seat numbers.");
+                    continue;
+                }
+
+                seatNumbers = String.join(",", unique);
+                return true;
+            }
+        }
+    }
+}
