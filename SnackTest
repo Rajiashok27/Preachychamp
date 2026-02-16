@@ -1,0 +1,29 @@
+package team4;
+
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
+import booking.Snack;
+
+import java.util.Scanner;
+
+public class SnackTest {
+
+    @Test
+    void testSnackOption1() {
+        Scanner sc = new Scanner("1\n");
+        Snack s = new Snack();
+        assertTrue(s.selectSnacks(sc));
+        assertEquals("Popcorn + Coke", s.snackDetails);
+        assertEquals(200, s.snackCost);
+    }
+
+    @Test
+    void testNoSnacks() {
+        Scanner sc = new Scanner("3\n");
+        Snack s = new Snack();
+        assertTrue(s.selectSnacks(sc));
+        assertEquals("No Snacks", s.snackDetails);
+        assertEquals(0, s.snackCost);
+    }
+}
