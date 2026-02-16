@@ -1,0 +1,34 @@
+package team4;
+
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
+import booking.Seat;
+
+import java.util.Scanner;
+
+public class SeatTest {
+
+    @Test
+    void testValidSeatSelection() {
+        Scanner sc = new Scanner("2\nA1,A2\n");
+        Seat seat = new Seat();
+        assertTrue(seat.selectSeats(sc));
+        assertEquals("A1,A2", seat.seatNumbers);
+    }
+
+    @Test
+    void testInvalidSeatCountThenValid() {
+        Scanner sc = new Scanner("2\nA1\nA1,A2\n");
+        Seat seat = new Seat();
+        assertTrue(seat.selectSeats(sc));
+    }
+
+    @Test
+    void testInvalidFormatThenValid() {
+        Scanner sc = new Scanner("1\na23\nB5\n");
+        Seat seat = new Seat();
+        assertTrue(seat.selectSeats(sc));
+        assertEquals("B5", seat.seatNumbers);
+    }
+}
