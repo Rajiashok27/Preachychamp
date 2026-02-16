@@ -1,0 +1,122 @@
+package team4;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import booking.MainApp;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
+public class MainAppTest {
+
+    private final PrintStream originalOut = System.out;
+    private final java.io.InputStream originalIn = System.in;
+
+    private ByteArrayOutputStream outContent;
+
+    @BeforeEach
+    void setUp() {
+        outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+    }
+
+    @AfterEach
+    void tearDown() {
+        System.setOut(originalOut);
+        System.setIn(originalIn);
+    }
+
+   
+    private String buildHappyPathInput() {
+        String futureDate = LocalDate.now().plusDays(1)
+                .format(DateTimeFormatter.ofPattern("MM-dd-yyyy"));
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("1\n");                
+        sb.append("2\n");                
+        sb.append("1\n");                
+        sb.append(futureDate).append("\n"); 
+        sb.append("1\n");               
+        sb.append("1\n");              
+        sb.append("2\n");                
+        sb.append("A1,A2\n");          
+        sb.append("3\n");                
+        sb.append("1\n");                
+        return sb.toString();
+    }
+
+    @Test
+    void testMainEndToEnd_HappyPath() {
+        String input = buildHappyPathInput();
+        System.setIn(new ByteArrayInputStream(input.getBytes()));
+
+        // Run main
+        MainApp.main(new String[]{});
+
+        String output = outContent.toString();
+
+        // Basic sanity checks that the flow completed and the ticket got printed
+        assertAll(
+            () -> assertTrue(output.contains("Welcome to Movie Ticket Booking System"), "should greet"),
+            () -> assertTrue(output.contains("Select City"), "city prompt should appear"),
+            () -> assertTrue(output.contains("Select Movie"), "movie prompt should appear"),
+            () -> assertTrue(output.contains("Select Theater"), "theater prompt should appear"),
+            () -> assertTrue(output.contains("Enter Show Date"), "date prompt should appear"),
+            () -> assertTrue(output.contains("Select Show Time"), "time prompt should appear"),
+            () -> assertTrue(output.contains("Select Screen Type"), "screen prompt should appear"),
+            () -> assertTrue(output.contains("Enter number of tickets"), "seats prompt should appear"),
+            () -> assertTrue(output.contains("Add Snacks?"), "snacks prompt should appear"),
+            () -> assertTrue(output.contains("Select Payment Method"), "payment prompt should appear"),
+            () -> assertTrue(output.contains("Processing payment..."), "should process payment"),
+            () -> assertTrue(output.contains("Payment Successful!"), "payment should succeed"),
+            () -> assertTrue(output.contains(" Ticket Confirmed") || output.contains("Ticket Confirmed"),
+                    "ticket should be confirmed"),
+            () -> assertTrue(output.contains("City   : Chennai"), "city printed"),
+            () -> assertTrue(output.contains("Movie  : Jawan"), "movie printed"),
+            () -> assertTrue(output.contains("Theater: PVR Cinemas"), "theater printed"),
+            () -> assertTrue(output.contains("Time   : 10:00 AM"), "time printed"),
+            () -> assertTrue(output.contains("Screen : AC"), "screen printed"),
+            () -> assertTrue(output.contains("Seats  : A1,A2") || output.contains("Seats  : A2,A1"),
+                    "seats printed (order may vary due to Set)")
+        );
+    }
+
+    @Test
+    void testMain_WithSomeInvalidInputsThenRecovery() {
+        // Mix invalid entries that each sub-flow will reject once, then valid entries.
+        String futureDate = LocalDate.now().plusDays(1)
+                .format(DateTimeFormatter.ofPattern("MM-dd-yyyy"));
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("abc\n3\n");              
+        sb.append("xyz\n1\n");             
+        sb.append("9\n2\n");               
+        sb.append("13-40-2025\n").append(futureDate).append("\n"); 
+        sb.append("9\n2\n");               
+        sb.append("5\n1\n");                
+        sb.append("0\n2\n");                
+        sb.append("A1\nA1,A1\nA1,A2\n");    
+        sb.append("42\n1\n");               
+        sb.append("0\n3\n");                
+
+        System.setIn(new ByteArrayInputStream(sb.toString().getBytes()));
+
+        MainApp.main(new String[]{});
+
+        String output = outContent.toString();
+
+        assertAll(
+            () -> assertTrue(output.contains("Invalid input"), "should report invalid input at least once"),
+            () -> assertTrue(output.contains("Ticket Confirmed") || output.contains("Ticket Confirmed"),
+                    "should eventually confirm ticket")
+        );
+    }
+}
