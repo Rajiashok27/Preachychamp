@@ -1,0 +1,29 @@
+package team4;
+
+import org.junit.jupiter.api.Test;
+
+import booking.City;
+import booking.Movie;
+import booking.Seat;
+import booking.Show;
+import booking.Snack;
+import booking.Theater;
+import booking.Ticket;
+
+public class TicketTest {
+
+    @Test
+    void testPrintTicket() {
+        City city = new City(); city.cityName = "Chennai";
+        Movie movie = new Movie(); movie.movieName = "Leo";
+        Theater th = new Theater(); th.theaterName = "PVR Cinemas";
+        Show show = new Show(); show.date = "02-10-2026"; show.time = "10:00 AM"; show.screenType = "AC";
+        Seat seat = new Seat(); seat.seatNumbers = "A1,A2";
+        Snack sn = new Snack(); sn.snackDetails = "Popcorn";
+
+        Ticket t = new Ticket(city, movie, th, show, seat, sn);
+
+        // Just make sure no exceptions are thrown
+        t.printTicket();
+    }
+}
