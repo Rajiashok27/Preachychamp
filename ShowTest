@@ -1,0 +1,27 @@
+package team4;
+
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
+import booking.Show;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Scanner;
+
+public class ShowTest {
+
+    @Test
+    void testValidShow() {
+        String date = LocalDate.now().plusDays(1)
+                .format(DateTimeFormatter.ofPattern("MM-dd-yyyy"));
+
+        Scanner sc = new Scanner(date + "\n1\n1\n");
+        Show show = new Show();
+
+        assertTrue(show.selectShow(sc));
+        assertEquals(date, show.date);
+        assertEquals("10:00 AM", show.time);
+        assertEquals("AC", show.screenType);
+    }
+}
