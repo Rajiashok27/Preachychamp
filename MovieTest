@@ -1,0 +1,27 @@
+package team4;
+
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
+import booking.Movie;
+
+import java.util.Scanner;
+
+public class MovieTest {
+
+    @Test
+    void testValidMovieSelection() {
+        Scanner sc = new Scanner("2\n");
+        Movie movie = new Movie();
+        assertTrue(movie.selectMovie(sc));
+        assertEquals("Jawan", movie.movieName);
+    }
+
+    @Test
+    void testInvalidThenValidMovieSelection() {
+        Scanner sc = new Scanner("xyz\n1\n");
+        Movie movie = new Movie();
+        assertTrue(movie.selectMovie(sc));
+        assertEquals("Leo", movie.movieName);
+    }
+}
